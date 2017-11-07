@@ -1,11 +1,16 @@
 package com.szachnowicz;
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import com.szachnowicz.DeffHellman.DeffHell;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class ServerChat extends AbstractChat  implements  Runnable{
+import java.io.*;
+import java.math.BigInteger;
+import java.net.ServerSocket;
+
+public class ServerChat extends AbstractChat {
     private ServerSocket server;
+    private boolean keyRequested = false;
 
     public static void main(String[] args) {
 
@@ -16,7 +21,7 @@ public class ServerChat extends AbstractChat  implements  Runnable{
     public ServerChat(String title) {
         super(title);
 
-
+        deffHell = new DeffHell();
         sendingThread = new Thread(this);
         reciveThread = new Thread(this);
         sendingThread.start();
@@ -32,7 +37,7 @@ public class ServerChat extends AbstractChat  implements  Runnable{
         System.out.println("Server is waiting. . . . ");
         socket = server.accept();
         System.out.println("Client connected with Ip " + socket.getInetAddress().getHostAddress());
-        
+
 
     }
 
@@ -42,8 +47,8 @@ public class ServerChat extends AbstractChat  implements  Runnable{
         try {
             if (Thread.currentThread() == sendingThread) {
                 do {
-
                     printWriter = new PrintWriter(socket.getOutputStream(), true);
+
 
                 } while (true);
             } else {
@@ -60,15 +65,62 @@ public class ServerChat extends AbstractChat  implements  Runnable{
 
     @Override
     public void sendMessage(String message) {
-        printWriter.println(message);
+        if (printWriter != null) {
 
+            if (authorised) {
+                printWriter.println(deffHell.codeMessage(message));
+            } else {
+                printWriter.println(message);
+            }
+
+        }
     }
 
     @Override
     public void reciveMessage(String message) {
-        if (chatBox != null) {
-            chatBox.append(String.format("%" + 10 + "s", " ") + message);
+
+
+        try {
+            JSONObject json = new JSONObject(message);
+            String request = json.getString("request");
+
+            if (request.equals("message") && chatBox != null && authorised) {
+                chatBox.append("FROM CLIENT" + deffHell.decodeMessage(message) + "\n");
+            }
+
+
+            if (request.equals("publicKey")) {
+                sendPublicKeys();
+            }
+
+            if (request.equals("moduloPublicModulo")) {
+                System.out.println("mod recived form cilent ");
+                BigInteger mod = BigInteger.valueOf(json.getInt("mod"));
+                deffHell.setEncryKey(mod);
+                System.out.println(mod + " mod form server ");
+                sendMessage(deffHell.getcalculMoudloJson());
+                System.out.println("key " + deffHell.getEncryKey());
+
+
+            }
+            if (request.equals("authOK")) {
+                sendMessage(new JSONObject().put("request", "authOK").toString());
+                authorised = true;
+                System.out.println("Autorisation Granded");
+
+            }
+
+
+        } catch (JSONException exepction) {
+            System.out.println("Problem with JSON " + exepction.toString());
+
+
         }
     }
+
+    private void sendPublicKeys() {
+        sendMessage(deffHell.getKey());
+    }
+
 
 }

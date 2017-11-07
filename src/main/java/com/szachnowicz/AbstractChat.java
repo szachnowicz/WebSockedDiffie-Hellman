@@ -1,24 +1,31 @@
 package com.szachnowicz;
 
+import com.szachnowicz.DeffHellman.DeffHell;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public abstract class AbstractChat implements Runnable {
     protected static final int PORT = 9876;
-    protected JFrame chatFrame;
-    protected JTextField messageBox;
-    protected JButton sendMessage;
+    private JFrame chatFrame;
+    private JTextField messageBox;
+    private JButton sendMessage;
     protected JTextArea chatBox;
+
 
     protected InetAddress host;
     protected Socket socket = null;
     protected Thread sendingThread, reciveThread;
     protected BufferedReader bufferedReader;
     protected PrintWriter printWriter;
+
+    protected DeffHell deffHell;
+    protected boolean authorised;
 
     public AbstractChat(String title) {
 
@@ -41,6 +48,8 @@ public abstract class AbstractChat implements Runnable {
     }
 
     protected abstract void setSocked() throws IOException, ClassNotFoundException;
+
+
 
 
     public void display() {
@@ -70,7 +79,7 @@ public abstract class AbstractChat implements Runnable {
                 messageBox.setText("");
             } else {
                 this.sendMessage(messageBoxText);
-
+                messageBox.setText("");
             }
             messageBox.requestFocusInWindow();
 

@@ -1,8 +1,7 @@
 package com.szachnowicz;
 
+import com.szachnowicz.DeffHellman.NumberService;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class NumberServiceTest
 {
