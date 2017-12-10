@@ -11,7 +11,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public abstract class AbstractChat implements Runnable {
-    protected static final int PORT = 9876;
+
     private JFrame chatFrame;
     private JTextField messageBox;
     private JButton sendMessage;

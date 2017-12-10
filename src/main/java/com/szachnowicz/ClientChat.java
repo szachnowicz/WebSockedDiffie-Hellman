@@ -7,10 +7,9 @@ import org.json.JSONObject;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.ConnectException;
-import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Random;
+
+import static com.szachnowicz.ServerMenager.PORT;
 
 public class ClientChat extends AbstractChat {
     private boolean keyRequested = false;
@@ -51,9 +50,7 @@ public class ClientChat extends AbstractChat {
             else{
                 printWriter.println(message);
             }
-
         }
-
     }
 
     @Override
@@ -69,7 +66,7 @@ public class ClientChat extends AbstractChat {
             if (request.equals("publicKey")) {
                 deffHell = new DeffHell(json.getInt("p"), json.getInt("g"));
                 System.out.println(" key recived form server P : " + json.getInt("p") + " G :" + json.getInt("g"));
-                sendMessage(deffHell.getcalculMoudloJson());
+                sendMessage(deffHell.getCalculMoudloJson());
             }
 
             if (request.equals("moduloPublicModulo")) {
@@ -91,7 +88,8 @@ public class ClientChat extends AbstractChat {
 
 
             if (request.equals("message") && chatBox != null && authorised) {
-                chatBox.append("FROM SERVER" + deffHell.decodeMessage(message) + "\n");
+                System.out.println("Message recived : " +json.getString("mod"));
+                chatBox.append("FROM SERVER : " + deffHell.decodeMessage(message) + "\n");
             }
 
 

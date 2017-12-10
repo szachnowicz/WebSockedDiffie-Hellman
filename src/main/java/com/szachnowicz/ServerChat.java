@@ -7,20 +7,43 @@ import org.json.JSONObject;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.ServerSocket;
+import java.net.Socket;
+
+import static com.szachnowicz.ServerMenager.PORT;
 
 public class ServerChat extends AbstractChat {
-    private ServerSocket server;
+//    private ServerSocket server;
     private boolean keyRequested = false;
 
     public static void main(String[] args) {
+//        Socket s=null;
+//        ServerSocket ss2=null;
+//
+//        try{
+//            ss2   = new ServerSocket(PORT); // can also use static final PORT_NUM , when defined
+//
+//        }
+//        catch(IOException e){
+//            e.printStackTrace();
+//            System.out.println("Server error");
+//
+//        }
+//
+//
+//
+//
+//
+//
+//        final ServerChat serverChat = new ServerChat("server");
+//
+////
 
-        final ServerChat serverChat = new ServerChat("server");
     }
 
 
-    public ServerChat(String title) {
+    public ServerChat(String title, Socket socket) {
         super(title);
-
+        this.socket = socket;
         deffHell = new DeffHell();
         sendingThread = new Thread(this);
         reciveThread = new Thread(this);
@@ -33,10 +56,10 @@ public class ServerChat extends AbstractChat {
     @Override
     protected void setSocked() throws ClassNotFoundException, IOException {
 
-        server = new ServerSocket(PORT);
-        System.out.println("Server is waiting. . . . ");
-        socket = server.accept();
-        System.out.println("Client connected with Ip " + socket.getInetAddress().getHostAddress());
+//        server = new ServerSocket(PORT);
+//        System.out.println("Server is waiting. . . . ");
+//        socket = server.accept();
+//        System.out.println("Client connected with Ip " + socket.getInetAddress().getHostAddress());
 
 
     }
@@ -85,7 +108,8 @@ public class ServerChat extends AbstractChat {
             String request = json.getString("request");
 
             if (request.equals("message") && chatBox != null && authorised) {
-                chatBox.append("FROM CLIENT" + deffHell.decodeMessage(message) + "\n");
+                System.out.println("Message recived : " +json.getString("mod"));
+                chatBox.append("FROM CLIENT : " + deffHell.decodeMessage(message) + "\n");
             }
 
 
@@ -98,7 +122,7 @@ public class ServerChat extends AbstractChat {
                 BigInteger mod = BigInteger.valueOf(json.getInt("mod"));
                 deffHell.setEncryKey(mod);
                 System.out.println(mod + " mod form server ");
-                sendMessage(deffHell.getcalculMoudloJson());
+                sendMessage(deffHell.getCalculMoudloJson());
                 System.out.println("key " + deffHell.getEncryKey());
 
 

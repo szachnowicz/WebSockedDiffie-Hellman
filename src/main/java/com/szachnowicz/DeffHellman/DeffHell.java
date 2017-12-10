@@ -45,7 +45,7 @@ public class DeffHell {
         return calculMoudlo;
     }
 
-    public String getcalculMoudloJson() {
+    public String getCalculMoudloJson() {
         JSONObject json = new JSONObject();
         json.put("request", "moduloPublicModulo");
         json.put("mod", getCalculMoudlo());
@@ -63,50 +63,20 @@ public class DeffHell {
     }
 
     public String codeMessage(String message) {
-
-
         JSONObject json = new JSONObject();
         json.put("request", "message");
-
-        json.put("mod", Arrays.toString(encrypt(message,String.valueOf(encryKey))));
-
+        json.put("mod", new StringXORer().encode(message,String.valueOf(encryKey)));
         return json.toString();
 
     }
 
 
     public String decodeMessage(String message) {
-
-        return decrypt(string2Arr(message), String.valueOf(encryKey));
+        JSONObject json = new JSONObject(message);
+        final String mod = json.getString("mod");
+        return new StringXORer().decode(mod, String.valueOf(encryKey));
 
     }
 
 
-
-    private static String decrypt(int[] input, String key) {
-        String output = "";
-        for(int i = 0; i < input.length; i++) {
-            output += (char) ((input[i] - 48) ^ (int) key.charAt(i % (key.length() - 1)));
-        }
-        return output;
-    }
-
-    private static int[] encrypt(String str, String key) {
-        int[] output = new int[str.length()];
-        for(int i = 0; i < str.length(); i++) {
-            int o = (Integer.valueOf(str.charAt(i)) ^ Integer.valueOf(key.charAt(i % (key.length() - 1)))) + '0';
-            output[i] = o;
-        }
-        return output;
-    }
-
-
-    private static int[] string2Arr(String str) {
-        String[] sarr = str.split(",");
-        int[] out = new int[sarr.length];
-        for (int i = 0; i < out.length; i++) {
-            out[i] = Integer.valueOf(sarr[i]);
-        }
-        return out;
-    }
 }
