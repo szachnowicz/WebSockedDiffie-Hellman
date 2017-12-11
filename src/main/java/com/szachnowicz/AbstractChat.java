@@ -28,11 +28,8 @@ public abstract class AbstractChat implements Runnable {
     protected boolean authorised;
 
     public AbstractChat(String title) {
-
-
         chatFrame = new JFrame(title);
         display();
-
         try {
             host = InetAddress.getLocalHost();
             setSocked();
@@ -44,10 +41,13 @@ public abstract class AbstractChat implements Runnable {
             e.printStackTrace();
         }
 
-
     }
 
+    public abstract void sendMessage(String message);
+
     protected abstract void setSocked() throws IOException, ClassNotFoundException;
+
+    public abstract void reciveMessage(String message);
 
 
 
@@ -128,10 +128,6 @@ public abstract class AbstractChat implements Runnable {
             }
         });
     }
-
-    public abstract void sendMessage(String message);
-
-    public abstract void reciveMessage(String message);
 
 
 }

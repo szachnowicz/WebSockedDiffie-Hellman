@@ -59,9 +59,8 @@ public class ClientChat extends AbstractChat {
 
         try {
             JSONObject json = new JSONObject(message);
-
+            System.out.println("JSON REVICED :" +json);
             String request = json.getString("request");
-
 
             if (request.equals("publicKey")) {
                 deffHell = new DeffHell(json.getInt("p"), json.getInt("g"));

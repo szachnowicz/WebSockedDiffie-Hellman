@@ -106,12 +106,14 @@ public class ServerChat extends AbstractChat {
         try {
             JSONObject json = new JSONObject(message);
             String request = json.getString("request");
+            System.out.println("JSON REVICED :" +json);
+
+
 
             if (request.equals("message") && chatBox != null && authorised) {
                 System.out.println("Message recived : " +json.getString("mod"));
                 chatBox.append("FROM CLIENT : " + deffHell.decodeMessage(message) + "\n");
             }
-
 
             if (request.equals("publicKey")) {
                 sendPublicKeys();
